@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "0 * * * *" # Ejecuta cada hora para actualizar la IP
+    #- cron: "0 * * * *" # Ejecuta cada hora para actualizar la IP
   workflow_dispatch:
     inputs:
       user_ip:
