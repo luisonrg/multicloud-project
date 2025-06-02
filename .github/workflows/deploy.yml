@@ -6,7 +6,11 @@ on:
       - main
   schedule:
     - cron: "0 * * * *" # Ejecuta cada hora para actualizar la IP
-  workflow_dispatch: # Permite ejecutar manualmente
+  workflow_dispatch:
+    inputs:
+      user_ip:
+        description: 'IP pública desde donde permitir acceso'
+        required: true
 
 jobs:
   update-nsg:
@@ -20,8 +24,9 @@ jobs:
         with:
           terraform_version: 1.5.0
 
-      - name: Get user public IP
-        run: bash scripts/update_nsg.sh
+      # - name: Get user public IP
+      #   run: bash scripts/update_nsg.sh
+      # Comentado porque ya no se usa, la IP viene como input manual
 
       - name: Terraform Init
         env:
@@ -38,6 +43,6 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          TF_VAR_user_ip: ${{ env.USER_IP }}
+          TF_VAR_user_ip: ${{ github.event.inputs.user_ip }}
         run: terraform apply -auto-approve
         working-directory: terraform
